@@ -2,60 +2,10 @@ from datetime import datetime
 import os
 import yaml
 import re
-
+from collections import OrderedDict
 
 from consts import *
 from todo import *
-
-
-# Custom YAML Dumper that formats the output as desired
-class CustomDumper(yaml.SafeDumper):
-    def increase_indent(self, flow=False, indentless=False):
-        return super(CustomDumper, self).increase_indent(flow, False)
-
-    def write_line_break(self, data=None):
-        super().write_line_break(data)
-
-        # Add a single blank line before the 'tasks' key
-        if self.event and hasattr(self.event, 'value') and self.event.value == 'tasks':
-            if not hasattr(self, '_tasks_key_written'):
-                super().write_line_break()
-                self._tasks_key_written = True
-
-        # Add a single blank line between tasks
-        if self.event and hasattr(self.event, 'anchor') and self.event.anchor == 'tasks':
-            if hasattr(self, '_last_task_written') and self._last_task_written:
-                super().write_line_break()
-            self._last_task_written = True
-
-    def represent_mapping(self, tag, mapping, flow_style=None):
-        # Ensure proper formatting for the 'tasks' key
-        if 'tasks' in mapping:
-            tasks = mapping.pop('tasks')
-            node = super(CustomDumper, self).represent_mapping(tag, mapping, flow_style)
-            node.value.append((self.represent_data('tasks'), self.represent_data(tasks)))
-            return node
-        return super(CustomDumper, self).represent_mapping(tag, mapping, flow_style)
-
-    def represent_scalar(self, tag, value, style=None):
-        # Ensure `Details` field uses `|` for multiline strings
-        if isinstance(value, str) and '\n' in value:
-            style = '|'
-        return super(CustomDumper, self).represent_scalar(tag, value, style)
-
-# Custom string representer that removes quotes from dates
-def date_representer(dumper, data):
-    if isinstance(data, str):
-        # If this is a date or datetime string
-        if re.match(r'^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?$', data):
-            return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='')
-        # If this is the "Details" field, use pipe style
-        elif len(data) > 20 or '\n' in data:
-            return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
-    return dumper.represent_str(data)
-
-# Register the custom representer
-CustomDumper.add_representer(str, date_representer)
 
 
 class ToDoList():
@@ -88,32 +38,31 @@ class ToDoList():
             "ToDos": {
                 "created_by": self.created_by,
                 "changed_by": os.getlogin(),
-                "created_date": self.creation_date.strftime("%Y-%m-%d"),
-                "changed_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "created_date": self.creation_date,
+                "changed_date": datetime.now(),
                 "tasks": {}
             }
         }
         for task in self.tasks:
-            data["ToDos"]["tasks"][task.title] = dict(task)
-        
+            data["ToDos"]["tasks"][task.title] = task.to_dict()
+
+        # Convert OrderedDict to a standard dict before dumping to YAML
         with open(filename, "w+", encoding="utf-8") as f:
-            yaml.dump(data, f, Dumper=CustomDumper, default_flow_style=False, 
-                      sort_keys=False, width=70, allow_unicode=True, indent=2)
-    
+            yaml.dump(data, f, default_flow_style=False, sort_keys=False)
+
     def load(self, filename: str):
         if os.path.exists(filename):
             self.tasks = []
             with open(filename, "r", encoding="utf-8") as f:
                 data = yaml.safe_load(f)
-                
+
                 if data and "ToDos" in data and "tasks" in data["ToDos"]:
                     if "created_date" in data["ToDos"]:
-                        created_date_str = data["ToDos"]["created_date"]
-                        self.creation_date = datetime.strptime(created_date_str, "%Y-%m-%d")
-                    
+                        self.creation_date = data["ToDos"]["created_date"]
+
                     if "created_by" in data["ToDos"]:
                         self.created_by = data["ToDos"]["created_by"]
-                    
+
                     task_dict = data["ToDos"]["tasks"]
                     for title, task_data in task_dict.items():
                         task = ToDo.From_dict(title, task_data)

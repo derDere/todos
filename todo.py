@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-
+from collections import OrderedDict
 
 from consts import *
 from tools import *
@@ -24,24 +24,14 @@ class ToDo():
     def toggle(self) -> None:
         """Toggle the state of the task."""
         self.state = not self.state
-    
-    def __iter__(self):
-        return iter(self.__dict__().items())
-    
-    def __getitem__(self, key):
-        return self.__dict__()[key]
-    
-    def keys(self):
-        return self.__dict__().keys()
 
-    def __dict__(self) -> dict:
+    def to_dict(self) -> dict:
         """Convert ToDo object to a dictionary for YAML serialization."""
-        task_dict = {
-            "state": self.state,
-            "created": self.created_at.strftime("%Y-%m-%d"),
-        }
-        if self.planned_at:
-            task_dict["planned"] = self.planned_at.strftime("%Y-%m-%d")
+        task_dict = {}
+        task_dict["state"] = self.state
+        task_dict["created"] = self.created_at
+        if self.planned_at is not None:
+            task_dict["planned"] = self.planned_at
         if self.description:
             task_dict["details"] = self.description
         return task_dict
@@ -52,10 +42,10 @@ class ToDo():
         task = ToDo(
             title=title,
             description=task_dict.get("details", ""),
-            planned_at=datetime.strptime(task_dict["planned"], "%Y-%m-%d") if task_dict.get("planned") else None
+            planned_at=task_dict.get("planned")
         )
         task.state = task_dict["state"]
-        task.created_at = datetime.strptime(task_dict["created"], "%Y-%m-%d")
+        task.created_at = task_dict["created"]
         return task
 
     def print_min(self, prefix:str = "", suffix:str = "", padw:int=0, width:int = HL_SIZE, color:str=None):
