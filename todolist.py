@@ -11,10 +11,12 @@ class ToDoList():
 
     tasks:list[ToDo]
     creation_date:datetime
+    created_by:str
 
     def __init__(self):
         self.tasks = []
         self.creation_date = datetime.now()
+        self.created_by = os.getlogin()
     
     def add_task(self, task: ToDo):
         if not isinstance(task, ToDo):
@@ -34,7 +36,8 @@ class ToDoList():
         # Prepare data for YAML
         data = {
             "ToDos": {
-                "author": os.getlogin(),
+                "created_by": self.created_by,
+                "changed_by": os.getlogin(),
                 "created_date": self.creation_date.strftime("%Y-%m-%d"),
                 "changed_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "tasks": {}
@@ -62,6 +65,10 @@ class ToDoList():
                     if "created_date" in data["ToDos"]:
                         created_date_str = data["ToDos"]["created_date"]
                         self.creation_date = datetime.strptime(created_date_str, "%Y-%m-%d")
+                    
+                    # Load the created_by field
+                    if "created_by" in data["ToDos"]:
+                        self.created_by = data["ToDos"]["created_by"]
                     
                     task_dict = data["ToDos"]["tasks"]
                     for title, task_data in task_dict.items():
