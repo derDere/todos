@@ -50,7 +50,7 @@ class ToDo():
             created_at_str = match.group(6)
             created_at = datetime.strptime(created_at_str, "%Y-%m-%d")
             description = match.group(7)
-            desc = ""
+            desc = []
             if description is None:
                 description = ""
             else:
@@ -60,7 +60,9 @@ class ToDo():
                         line = line[8:]
                     else:
                         line = line.strip()
-                    desc += f"\n{line}"
+                    if len(line) > 0:
+                        desc.append(line)
+            desc = "\n".join(desc).strip()
             task = ToDo(title=title, description=desc, planned_at=planned_at)
             task.state = state
             task.created_at = created_at
@@ -78,22 +80,49 @@ class ToDo():
         line = f"{prefix}{line}{suffix}"
         center(line, width, color=color)
     
-    def print_full(self):
+    def selectable_fields(self) -> list[str]:
+        return ["title", "planned", "created", "description"]
+    
+    def print_full(self, selection:str=""):
+        larr = current_char_set[2]
+        larr = larr + larr + larr + " "
+        rarr = current_char_set[3]
+        rarr = " " + rarr + rarr + rarr
         hl()
         check = current_char_set[0]
         state = f"[{check}]" if self.state else "[ ]"
         line = f"{state} {self.title}"
-        center(line)
+        title_color = COLOR_BRIGHT_MAGENTA
+        if selection == "title":
+            title_color = COLOR_BRIGHT_GREEN
+            line = f"{larr}{line}{rarr}"
+        center(line, color=title_color)
         hl()
-        if self.planned_at:
-            planned_str = self.planned_at.strftime(" - Deadline: `%Y-%m-%d`")
+        if self.planned_at or len(selection) > 0:
+            if not self.planned_at:
+                planned_str = " - Deadline: `None`"
+            else:
+                planned_str = self.planned_at.strftime(" - Deadline: `%Y-%m-%d`")
+            if selection == "planned":
+                planned_str = f"{COLOR_BRIGHT_GREEN}{planned_str}{rarr}{COLOR_RESET}"
             print(planned_str)
         created_str = self.created_at.strftime(" - Created: `%Y-%m-%d`")
+        if selection == "created":
+            created_str = f"{COLOR_BRIGHT_GREEN}{created_str}{rarr}{COLOR_RESET}"
         print(created_str)
         if self.description:
             hl()
-            center("Description:")
+            center("Description:", color=COLOR_BRIGHT_CYAN)
             lines = self.description.splitlines()
-            for line in lines:
-                print(f"  {line}")
+            midIndex = len(lines) // 2
+            for i, line in enumerate(lines):
+                if selection == "description":
+                    if i == midIndex:
+                        line = f"{larr}{line}"
+                    else:
+                        line = f"    {line}"
+                    line = f"{COLOR_BRIGHT_GREEN}{line}{COLOR_RESET}"
+                else:
+                    line = f"    {line}"
+                print(line)
         hl()

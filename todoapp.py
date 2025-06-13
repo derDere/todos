@@ -19,11 +19,49 @@ class ToDoApp:
         self._selected_task_index = 0
         self.todo_list.load(filename)
     
-    def _edit_task(self, task: ToDo):
+    def _print_edit_help(self):
         cls()
-        task.print_full()
-        input("Press Enter to edit the task...")
-        # TODO: Implement task editing functionality
+        hl()
+        center("EDIT HELP:", HL_SIZE, color=COLOR_CYAN)
+        hl()
+        print("")
+        print("  n    Select next field")
+        print("")
+        print("  p    Select previous field")
+        print("")
+        print("  e    Edit the selected field (not implemented yet)")
+        print("")
+        print(" ^X")
+        print("  q")
+        print("  b    Go back to the main menu")
+        print("")
+        print("  ?    Show this help")
+        print("")
+        hl()
+        input("Press Enter to return to the edit menu...")
+    
+    def _edit_task(self, task: ToDo):
+        selectables = task.selectable_fields()
+        selection = 0
+        while True:
+            selected_field = selectables[selection]
+            cls()
+            task.print_full(selection=selected_field)
+            center("Options: t n p e b ?", color=COLOR_BRIGHT_CYAN)
+            hl()
+
+            cmd = input(": ").strip().lower()
+            if cmd == "n":
+                selection = (selection + 1) % len(selectables)
+            elif cmd == "p":
+                selection = (selection - 1) % len(selectables)
+            elif cmd == "e":
+                # TODO: Implement task editing functionality
+                pass
+            elif cmd == "b" or cmd == CTRL_X_INPUT or cmd == "q":
+                break
+            elif cmd == "?":
+                self._print_edit_help()
 
     def _print_help_min(self, max_w: int = HL_SIZE):
         center("Options: + t d e q ? p n", max_w, color=COLOR_BRIGHT_CYAN)
@@ -66,6 +104,7 @@ class ToDoApp:
         print("  b    go back or exit the application")
         print("")
         print("  q")
+        print("  b")
         print(" ^X    Exit the application")
         hl()
         input("Press Enter to return to the main menu...")
@@ -226,7 +265,7 @@ class ToDoApp:
             self._edit_task(task)
             self.todo_list.save(self.filename)
 
-        elif cmds == "q" or cmd == CTRL_X_INPUT:
+        elif cmds == "q" or cmd == CTRL_X_INPUT or cmd == "b":
             hl(max_w)
             print(" Exiting the application...\n")
             time.sleep(0.5)
