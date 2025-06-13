@@ -74,8 +74,4 @@ def main(args:list[str]) -> int:
 
 if __name__ == "__main__":
     import sys
-    try:
-        sys.exit(main(sys.argv[1:]))
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        sys.exit(1)
+    sys.exit(main(sys.argv[1:]))
