@@ -38,7 +38,7 @@ class ToDo():
         """Convert ToDo object to a dictionary for YAML serialization."""
         return {
             "state": self.state,
-            "description": self.description,
+            "Details": self.description,
             "created_at": self.created_at.strftime("%Y-%m-%d"),
             "planned_at": self.planned_at.strftime("%Y-%m-%d") if self.planned_at else None
         }
@@ -48,7 +48,7 @@ class ToDo():
         """Create a ToDo object from a dictionary."""
         task = ToDo(
             title=title,
-            description=task_dict["description"],
+            description=task_dict["Details"],
             planned_at=datetime.strptime(task_dict["planned_at"], "%Y-%m-%d") if task_dict["planned_at"] else None
         )
         task.state = task_dict["state"]
