@@ -25,6 +25,8 @@ class ToDoApp:
         center("EDIT HELP:", HL_SIZE, color=COLOR_CYAN)
         hl()
         print("")
+        print("  t    Toggle the state of the task")
+        print("")
         print("  n    Select next field")
         print("")
         print("  p    Select previous field")
@@ -34,6 +36,7 @@ class ToDoApp:
         print(" ^X")
         print("  q")
         print("  b    Go back to the main menu")
+        print("       you may also enter nothing to go back")
         print("")
         print("  ?    Show this help")
         print("")
@@ -55,10 +58,27 @@ class ToDoApp:
                 selection = (selection + 1) % len(selectables)
             elif cmd == "p":
                 selection = (selection - 1) % len(selectables)
+            elif cmd == "t":
+                task.toggle()
             elif cmd == "e":
-                # TODO: Implement task editing functionality
-                pass
-            elif cmd == "b" or cmd == CTRL_X_INPUT or cmd == "q":
+                hl()
+                if selected_field == "title":
+                    new_title = edit_string("Edit Title:", task.title).strip()
+                    task.title = new_title
+                    self.todo_list.save(self.filename)
+                elif selected_field == "planned":
+                    new_deadline = edit_date("Edit Deadline:", task.planned_at, True)
+                    task.planned_at = new_deadline
+                    self.todo_list.save(self.filename)
+                elif selected_field == "created":
+                    new_created = edit_date("Edit Creation Date:", task.created_at)
+                    task.created_at = new_created
+                    self.todo_list.save(self.filename)
+                elif selected_field == "description":
+                    new_description = edit_multiline("Edit Description:", task.description).strip()
+                    task.description = new_description
+                    self.todo_list.save(self.filename)
+            elif cmd == "b" or cmd == CTRL_X_INPUT or cmd == "q" or cmd == "":
                 break
             elif cmd == "?":
                 self._print_edit_help()

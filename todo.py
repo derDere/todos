@@ -29,7 +29,7 @@ class ToDo():
         desc = ""
         lines = self.description.splitlines()
         if len(lines) > 0:
-            desc += "\n        ```"
+            desc += "\\\n        ```"
             for line in self.description.splitlines():
                 desc += f"\n        {line}"
             desc += "\n        ```"
@@ -110,11 +110,18 @@ class ToDo():
         if selection == "created":
             created_str = f"{COLOR_BRIGHT_GREEN}{created_str}{rarr}{COLOR_RESET}"
         print(created_str)
-        if self.description:
+        if self.description or len(selection) > 0:
             hl()
-            center("Description:", color=COLOR_BRIGHT_CYAN)
+            description_color = COLOR_BRIGHT_CYAN
+            if selection == "description":
+                description_color = COLOR_BRIGHT_GREEN
+            center("Description:", color=description_color)
             lines = self.description.splitlines()
-            midIndex = len(lines) // 2
+            if len(lines) <= 0 and len(selection) > 0:
+                lines = [f"{COLOR_BRIGHT_BLACK}EMPTY{COLOR_RESET}"]
+            midIndex = (len(lines) // 2) - 1
+            if midIndex < 0:
+                midIndex = 0
             for i, line in enumerate(lines):
                 if selection == "description":
                     if i == midIndex:
