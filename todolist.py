@@ -9,10 +9,12 @@ from todo import *
 
 class ToDoList():
 
-    tasks = []
+    tasks:list[ToDo]
+    creation_date:datetime
 
     def __init__(self):
         self.tasks = []
+        self.creation_date = datetime.now()
     
     def add_task(self, task: ToDo):
         if not isinstance(task, ToDo):
@@ -33,7 +35,7 @@ class ToDoList():
         data = {
             "ToDos": {
                 "author": os.getlogin(),
-                "created_date": datetime.now().strftime("%Y-%m-%d"),
+                "created_date": self.creation_date.strftime("%Y-%m-%d"),
                 "changed_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "tasks": {}
             }
@@ -56,6 +58,11 @@ class ToDoList():
                 
                 # Only process tasks from the new YAML format with title keys
                 if data and "ToDos" in data and "tasks" in data["ToDos"]:
+                    # Load the creation date
+                    if "created_date" in data["ToDos"]:
+                        created_date_str = data["ToDos"]["created_date"]
+                        self.creation_date = datetime.strptime(created_date_str, "%Y-%m-%d")
+                    
                     task_dict = data["ToDos"]["tasks"]
                     for title, task_data in task_dict.items():
                         # Use the From_dict method
