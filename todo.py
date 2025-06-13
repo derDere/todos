@@ -1,9 +1,12 @@
 from datetime import datetime
 from typing import Optional
-from collections import OrderedDict
 
 from consts import *
 from tools import *
+
+
+class AsLiteral(str):
+  pass
 
 
 class ToDo():
@@ -33,7 +36,7 @@ class ToDo():
         if self.planned_at is not None:
             task_dict["planned"] = self.planned_at
         if self.description:
-            task_dict["details"] = self.description
+            task_dict["details"] = AsLiteral(self.description)
         return task_dict
     
     @staticmethod

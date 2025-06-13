@@ -1,11 +1,16 @@
 from datetime import datetime
 import os
 import yaml
-import re
-from collections import OrderedDict
+from yaml.resolver import BaseResolver
 
 from consts import *
 from todo import *
+
+
+def represent_literal(dumper, data):
+  return dumper.represent_scalar(BaseResolver.DEFAULT_SCALAR_TAG,
+      data, style="|")
+yaml.add_representer(AsLiteral, represent_literal)
 
 
 class ToDoList():
