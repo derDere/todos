@@ -25,6 +25,15 @@ class ToDo():
         """Toggle the state of the task."""
         self.state = not self.state
     
+    def __iter__(self):
+        return iter(self.__dict__().items())
+    
+    def __getitem__(self, key):
+        return self.__dict__()[key]
+    
+    def keys(self):
+        return self.__dict__().keys()
+
     def __dict__(self) -> dict:
         """Convert ToDo object to a dictionary for YAML serialization."""
         return {
