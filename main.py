@@ -14,7 +14,7 @@ def cli_help():
     print("  -a, --ascii              Use ASCII character set for the UI")
     print("  -d, --demo               Add demo tasks to the ToDo list")
     print("  -nc, --no-colors         Disable colored output")
-    print("  filename                 The file to load/save the ToDo list (default: ~/todos.md)")
+    print(f"  filename                 The file to load/save the ToDo list (default: ~/{DEFAULT_FILENAME})")
     print("")
     print("Example:")
     print("  python main.py --ascii --demo my-todos.md")
