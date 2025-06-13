@@ -468,11 +468,15 @@ def main(args:list[str]) -> int:
         elif arg.lower() == "--no-colors" or arg.lower() == "-nc":
             global no_colors
             no_colors = True
-        elif arg.lower() == "--help" or arg.lower() == "-h":
+        elif arg.lower() == "--help" or arg.lower() == "-h" or arg.lower() == "/?" or arg.lower() == "?" or arg.lower() == "-?":
             cli_help()
             return 0
-        elif os.path.exists(arg) and len(filename) <= 0:
-            filename = arg
+        elif os.path.exists(arg):
+            if len(filename) > 0:
+                print("Error: Only one filename can be specified.")
+                return 1
+            else:
+                filename = arg
     if len(filename) <= 0:
         home_dir = os.path.expanduser("~")
         filename = os.path.join(home_dir, DEFAULT_FILENAME)
