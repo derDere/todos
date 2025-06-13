@@ -12,24 +12,36 @@ from todo import *
 class CustomDumper(yaml.SafeDumper):
     def increase_indent(self, flow=False, indentless=False):
         return super(CustomDumper, self).increase_indent(flow, False)
-    
-    # Override to add line breaks between tasks
+
     def write_line_break(self, data=None):
         super().write_line_break(data)
-        
-        # Add extra line breaks for better readability
-        if self.column == 0 and self.line > 1:
-            # Find current indentation level
-            indent_level = 0
-            for event in self.events:
-                if event.event_type == yaml.MappingStartEvent.yaml_tag:
-                    indent_level += 1
-                elif event.event_type == yaml.MappingEndEvent.yaml_tag:
-                    indent_level -= 1
-            
-            # Add extra newline when we're at the right indent level
-            if indent_level == 2:  # Inside tasks
+
+        # Add a single blank line before the 'tasks' key
+        if self.event and hasattr(self.event, 'value') and self.event.value == 'tasks':
+            if not hasattr(self, '_tasks_key_written'):
                 super().write_line_break()
+                self._tasks_key_written = True
+
+        # Add a single blank line between tasks
+        if self.event and hasattr(self.event, 'anchor') and self.event.anchor == 'tasks':
+            if hasattr(self, '_last_task_written') and self._last_task_written:
+                super().write_line_break()
+            self._last_task_written = True
+
+    def represent_mapping(self, tag, mapping, flow_style=None):
+        # Ensure proper formatting for the 'tasks' key
+        if 'tasks' in mapping:
+            tasks = mapping.pop('tasks')
+            node = super(CustomDumper, self).represent_mapping(tag, mapping, flow_style)
+            node.value.append((self.represent_data('tasks'), self.represent_data(tasks)))
+            return node
+        return super(CustomDumper, self).represent_mapping(tag, mapping, flow_style)
+
+    def represent_scalar(self, tag, value, style=None):
+        # Ensure `Details` field uses `|` for multiline strings
+        if isinstance(value, str) and '\n' in value:
+            style = '|'
+        return super(CustomDumper, self).represent_scalar(tag, value, style)
 
 # Custom string representer that removes quotes from dates
 def date_representer(dumper, data):
@@ -86,8 +98,7 @@ class ToDoList():
         
         with open(filename, "w+", encoding="utf-8") as f:
             yaml.dump(data, f, Dumper=CustomDumper, default_flow_style=False, 
-                      sort_keys=False, width=70, explicit_start=True, 
-                      allow_unicode=True, indent=2)
+                      sort_keys=False, width=70, allow_unicode=True, indent=2)
     
     def load(self, filename: str):
         if os.path.exists(filename):

@@ -36,23 +36,26 @@ class ToDo():
 
     def __dict__(self) -> dict:
         """Convert ToDo object to a dictionary for YAML serialization."""
-        return {
+        task_dict = {
             "state": self.state,
-            "Details": self.description,
-            "created_at": self.created_at.strftime("%Y-%m-%d"),
-            "planned_at": self.planned_at.strftime("%Y-%m-%d") if self.planned_at else None
+            "created": self.created_at.strftime("%Y-%m-%d"),
         }
+        if self.planned_at:
+            task_dict["planned"] = self.planned_at.strftime("%Y-%m-%d")
+        if self.description:
+            task_dict["details"] = self.description
+        return task_dict
     
     @staticmethod
     def From_dict(title: str, task_dict: dict) -> 'ToDo':
         """Create a ToDo object from a dictionary."""
         task = ToDo(
             title=title,
-            description=task_dict["Details"],
-            planned_at=datetime.strptime(task_dict["planned_at"], "%Y-%m-%d") if task_dict["planned_at"] else None
+            description=task_dict.get("details", ""),
+            planned_at=datetime.strptime(task_dict["planned"], "%Y-%m-%d") if task_dict.get("planned") else None
         )
         task.state = task_dict["state"]
-        task.created_at = datetime.strptime(task_dict["created_at"], "%Y-%m-%d")
+        task.created_at = datetime.strptime(task_dict["created"], "%Y-%m-%d")
         return task
 
     def print_min(self, prefix:str = "", suffix:str = "", padw:int=0, width:int = HL_SIZE, color:str=None):
