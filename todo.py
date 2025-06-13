@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import Optional
-import re
 
 
 from consts import *
@@ -22,52 +21,30 @@ class ToDo():
         self.created_at = datetime.now()
         self.planned_at = planned_at
     
-    def __str__(self):
-        status = "[X]" if self.state else "[ ]"
-        date = self.planned_at.strftime(" - Deadline: `%Y-%m-%d`") if self.planned_at else ""
-        cdate = self.created_at.strftime(" - Created: `%Y-%m-%d`")
-        desc = ""
-        lines = self.description.splitlines()
-        if len(lines) > 0:
-            desc += "\\\n        ```"
-            for line in self.description.splitlines():
-                desc += f"\n        {line}"
-            desc += "\n        ```"
-        return f"- {status} {self.title}{date}{cdate}{desc}"
-    
     def toggle(self) -> None:
         """Toggle the state of the task."""
         self.state = not self.state
     
+    def __dict__(self) -> dict:
+        """Convert ToDo object to a dictionary for YAML serialization."""
+        return {
+            "state": self.state,
+            "description": self.description,
+            "created_at": self.created_at.strftime("%Y-%m-%d"),
+            "planned_at": self.planned_at.strftime("%Y-%m-%d") if self.planned_at else None
+        }
+    
     @staticmethod
-    def From_str(task_str: str):
-        match = re.match(TODO_RE_PATTERN, task_str.strip())
-        if match:
-            state = match.group(1).upper() == "X"
-            title = match.group(2)
-            planned_at_str = match.group(4)
-            planned_at = datetime.strptime(planned_at_str, "%Y-%m-%d") if planned_at_str else None
-            created_at_str = match.group(6)
-            created_at = datetime.strptime(created_at_str, "%Y-%m-%d")
-            description = match.group(7)
-            desc = []
-            if description is None:
-                description = ""
-            else:
-                lines = description.splitlines()[:-1]
-                for line in lines:
-                    if line[:8] == "        ":
-                        line = line[8:]
-                    else:
-                        line = line.strip()
-                    if len(line) > 0:
-                        desc.append(line)
-            desc = "\n".join(desc).strip()
-            task = ToDo(title=title, description=desc, planned_at=planned_at)
-            task.state = state
-            task.created_at = created_at
-            return task
-        raise ValueError("String does not match the expected format for a ToDo task:\n\n" + task_str)
+    def From_dict(title: str, task_dict: dict) -> 'ToDo':
+        """Create a ToDo object from a dictionary."""
+        task = ToDo(
+            title=title,
+            description=task_dict["description"],
+            planned_at=datetime.strptime(task_dict["planned_at"], "%Y-%m-%d") if task_dict["planned_at"] else None
+        )
+        task.state = task_dict["state"]
+        task.created_at = datetime.strptime(task_dict["created_at"], "%Y-%m-%d")
+        return task
 
     def print_min(self, prefix:str = "", suffix:str = "", padw:int=0, width:int = HL_SIZE, color:str=None):
         check = current_char_set[0]

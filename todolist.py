@@ -1,4 +1,6 @@
 from datetime import datetime
+import os
+import yaml
 
 
 from consts import *
@@ -27,31 +29,40 @@ class ToDoList():
         raise ValueError("Task not found in the list.")
     
     def save(self, filename: str):
+        # Prepare data for YAML
+        data = {
+            "ToDos": {
+                "author": os.getlogin(),
+                "created_date": datetime.now().strftime("%Y-%m-%d"),
+                "changed_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "tasks": {}
+            }
+        }
+        
+        # Convert tasks to dictionary format with title as the key
+        for task in self.tasks:
+            # Use dict(task) and store with title as key
+            data["ToDos"]["tasks"][task.title] = dict(task)
+        
+        # Write to YAML file
         with open(filename, "w+", encoding="utf-8") as f:
-            # markdown yaml header
-            print("---", file=f)
-            print("Last updated:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"), file=f)
-            print(f"Last updated by: {os.getlogin()}", file=f)
-            print("Date format: `YYYY-MM-DD`", file=f)
-            print("---", file=f)
-            print("", file=f)
-            # write tasks
-            print("# ToDo List:", file=f)
-            print("", file=f)
-            for task in self.tasks:
-                print(task, file=f)
-
+            yaml.dump(data, f, default_flow_style=False, sort_keys=False)
+            
     def load(self, filename: str):
         if os.path.exists(filename):
             self.tasks = []
             with open(filename, "r", encoding="utf-8") as f:
-                content = f.read()
-                matches = re.finditer(TODO_RE_PATTERN, content, re.MULTILINE)
-                for match in matches:
-                    print(match)
-                    mstr = match.group(0)
-                    task = ToDo.From_str(mstr)
-                    self.add_task(task)
+                data = yaml.safe_load(f)
+                
+                # Only process tasks from the new YAML format with title keys
+                if data and "ToDos" in data and "tasks" in data["ToDos"]:
+                    task_dict = data["ToDos"]["tasks"]
+                    for title, task_data in task_dict.items():
+                        # Use the From_dict method
+                        task = ToDo.From_dict(title, task_data)
+                        self.add_task(task)
+                else:
+                    raise ValueError(f"File {filename} is not in the expected YAML format")
     
     def get_todays_tasks(self):
         today = datetime.now().date()
