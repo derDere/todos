@@ -2,7 +2,7 @@ TODO_RE_PATTERN = r"^- \[(X| )\] (.+?)( - Deadline: `(\d{4}-\d{2}-\d{2})`)?( - C
 HL_SIZE = 80
 CHAR_SET = "✔─▶◀"
 ASCII_CHAR_SET = "X_><"
-DEFAULT_FILENAME = "todos.md"
+DEFAULT_FILENAME = "todos.yaml"
 
 CTRL_X_INPUT = "\x18" # Ctrl+X
 
