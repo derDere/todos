@@ -143,8 +143,11 @@ class ToDoApp:
         print("")
         print("  /YYYY-MM-DD   Enter an iso-formatted date to filter tasks by date")
         print("")
+        print("  /d")
+        print("  /def")
         print("  /default      Goes back to the default view (no date filter)")
         print("")
+        print("  /c")
         print("  /cal")
         print("  /calendar     Opens the calendar view")
         hl()
@@ -203,7 +206,7 @@ class ToDoApp:
     def _find_tasks(self, cmd:str, all_tasks:list[ToDo]) -> list[ToDo]:
         if len(cmd) > 1:
             search = cmd[1:].strip()
-            found_tasks = self.todo_list.find_task(search)
+            found_tasks = self.todo_list.find_task(search, all_tasks)
             if len(found_tasks) > 0:
                 tasks = found_tasks
             else:
@@ -360,12 +363,11 @@ class ToDoApp:
             self._print_help_full()
         
         elif cmds == "t" and len(cmd) > 1:
-            search = cmd[1:].strip()
-            found_tasks = self.todo_list.find_task(search)
+            found_tasks = self._find_tasks(cmd, all_tasks)
             if len(found_tasks) > 0:
                 for task in found_tasks:
                     task.toggle()
-                    self.todo_list.save(self.filename)
+                self.todo_list.save(self.filename)
         
         elif cmds == "/" and len(cmd) > 1:
             self._adv_menu(cmd, max_w)
@@ -384,13 +386,16 @@ class ToDoApp:
     
     def _adv_menu(self, cmd, max_w=HL_SIZE):
         acmd = cmd[1:].strip().lower()
-        if acmd == "default":
+        if acmd == "default" or acmd == "def" or acmd == "d":
             self._selected_date = None
             self._selected_task_index = 0
         
-        elif acmd == "cal" or acmd == "calendar":
+        elif acmd == "cal" or acmd == "calendar" or acmd == "c":
             cv = CalendarView(self.todo_list, self._selected_date)
             cv.run()
+            if cv.show_list:
+                self._selected_date = cv.current_date
+                self._selected_task_index = 0
 
         elif re.match(ISO_DATE_PATTERN, acmd):
             try:

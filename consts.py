@@ -4,7 +4,8 @@ CHAR_SET =       "✔─▶◀┌┐└┘├┤┬┴─│┼═"
 ASCII_CHAR_SET =  "X_><++++++++-|+="
 DEFAULT_FILENAME = "todos.yaml"
 ISO_DATE_PATTERN = r"^\d{4}-\d{2}-\d{2}$"
-
+TIME_JUMP_PATTERN = r"^[ymd][+-]\d+$"
+CAL_CELL_WIDTH = 7
 CTRL_X_INPUT = "\x18" # Ctrl+X
 
 COLOR_RED = "\033[31m"

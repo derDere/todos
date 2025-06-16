@@ -86,10 +86,10 @@ class ToDoList():
     def get_tasks_for_date(self, date: datetime) -> list[ToDo]:
         return [task for task in self.tasks if task.planned_at and task.planned_at.date() == date.date()]
     
-    def find_task(self, search:str) -> list[ToDo]:
+    def find_task(self, search:str, all_tasks:list[ToDo]) -> list[ToDo]:
         search = search.lower().strip()
         found_tasks = []
-        for task in self.tasks:
+        for task in all_tasks:
             if search in task.title.lower():
                 found_tasks.append(task)
         return found_tasks
