@@ -2,6 +2,7 @@ from datetime import datetime
 import os
 import yaml
 from yaml.resolver import BaseResolver
+import getpass
 
 from consts import *
 from todo import *
@@ -22,7 +23,7 @@ class ToDoList():
     def __init__(self):
         self.tasks = []
         self.creation_date = datetime.now()
-        self.created_by = os.getlogin()
+        self.created_by = getpass.getuser()
     
     def add_task(self, task: ToDo):
         if not isinstance(task, ToDo):
@@ -42,7 +43,7 @@ class ToDoList():
         data = {
             "ToDos": {
                 "created_by": self.created_by,
-                "changed_by": os.getlogin(),
+                "changed_by": getpass.getuser(),
                 "created_date": self.creation_date,
                 "changed_date": datetime.now(),
                 "tasks": {}

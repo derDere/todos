@@ -46,6 +46,9 @@ sudo chown -R root:users "$INSTALL_DIR/.git"
 sudo chmod -R g+rwX "$INSTALL_DIR/.git"
 sudo find "$INSTALL_DIR/.git" -type d -exec chmod g+s {} \;
 
+# Install Python dependencies
+sudo python3 -m pip install -r "$INSTALL_DIR/requirements.txt"
+
 # Create symlink
 if [ -L "$SYMLINK" ]; then
     sudo rm "$SYMLINK" || { log_error "Failed to remove existing symlink $SYMLINK"; echo "Error: Could not update symlink."; exit 1; }
