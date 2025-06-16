@@ -155,6 +155,16 @@ class ToDoApp:
         print("  /cal")
         print("  /calendar     Opens the calendar view")
         print("")
+        print("  /aon")
+        print("  /asciion      Turn ASCII mode on")
+        print("  /aoff")
+        print("  /asciioff     Turn ASCII mode off")
+        print("")
+        print("  /con")
+        print("  /colorson      Turn colors on")
+        print("  /coff")
+        print("  /colorsoff     Turn colors off")
+        print("")
         print("  /?")
         print("  /h")
         print("  /help         Show this help message")
@@ -410,6 +420,18 @@ class ToDoApp:
         
         elif acmd == "?" or acmd == "h" or acmd == "help":
             self._print_help_full()
+        
+        elif acmd == "aon" or acmd == "asciion":
+            turn_on_ascii()
+
+        elif acmd == "aoff" or acmd == "asciioff":
+            turn_off_ascii()
+        
+        elif acmd == "con" or acmd == "colorson":
+            turn_on_colors()
+        
+        elif acmd == "coff" or acmd == "colorsoff":
+            turn_off_colors()
 
         elif re.match(ISO_DATE_PATTERN, acmd):
             try:
