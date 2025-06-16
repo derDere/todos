@@ -17,12 +17,14 @@ class ToDoApp:
     filename: str
     _selected_task_index: int
     _selected_date: Optional[datetime] = None
+    _start_commands: list[str] = []
 
     def __init__(self, filename: str):
         self.todo_list = ToDoList()
         self.filename = filename
         self._selected_task_index = 0
         self.todo_list.load(filename)
+        self._start_commands = []
     
     def _print_edit_help(self):
         cls()
@@ -139,7 +141,9 @@ class ToDoApp:
         hl()
         center("Advanced Commands:", HL_SIZE, color=COLOR_BRIGHT_CYAN)
         hl()
-        print("  /   Allow advanced commands starting with a slash")
+        print("  Advanced commands can now also be passed as CLI arguments.")
+        print("")
+        print("  /             All advanced commands starting with a slash")
         print("")
         print("  /YYYY-MM-DD   Enter an iso-formatted date to filter tasks by date")
         print("")
@@ -150,8 +154,12 @@ class ToDoApp:
         print("  /c")
         print("  /cal")
         print("  /calendar     Opens the calendar view")
+        print("")
+        print("  /?")
+        print("  /h")
+        print("  /help         Show this help message")
         hl()
-        input("Press Enter to return to the main menu...")
+        input("  Press Enter to return to the main menu...")
     
     def _confirm_deletion(self, tasks:list[ToDo]) -> bool:
         if len(tasks) <= 0:
@@ -231,7 +239,10 @@ class ToDoApp:
         return new_task_title
     
     def _menu_input(self) -> str:
-        cmd = input(": ").strip() + " "
+        if len(self._start_commands) > 0:
+            cmd = self._start_commands.pop(0)
+        else:
+            cmd = input(": ").strip() + " "
         cmds = cmd[0].lower()
         cmd = cmd.strip()
         return cmds, cmd
@@ -396,6 +407,9 @@ class ToDoApp:
             if cv.show_list:
                 self._selected_date = cv.current_date
                 self._selected_task_index = 0
+        
+        elif acmd == "?" or acmd == "h" or acmd == "help":
+            self._print_help_full()
 
         elif re.match(ISO_DATE_PATTERN, acmd):
             try:
@@ -404,6 +418,7 @@ class ToDoApp:
             except ValueError:
                 self._print_alert(f"Invalid date: {acmd}", max_w)
 
-    def run(self):
+    def run(self, start_commands: list[str] = []):
+        self._start_commands = start_commands
         while self._main_menu():
             pass

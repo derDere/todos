@@ -8,6 +8,10 @@ A simple command-line ToDo application to manage your tasks efficiently.
 - Add, edit, and toggle tasks.
 - Save and load tasks from a file.
 - CLI options for ASCII UI, demo tasks, and disabling colors.
+- View tasks in a calendar format with navigation options.
+- Advanced commands for filtering tasks by date and opening the calendar view.
+- Generate demo tasks for testing purposes.
+- Advanced commands can now also be passed as CLI arguments, such as `/calendar` or `/YYYY-MM-DD`.
 
 ## Installation
 1. Clone the repository:
@@ -31,9 +35,22 @@ Run the application with the following options:
 - `-nc, --no-colors`: Disable colored output.
 - `filename`: Specify the file to load/save the ToDo list (default: `~/todo.yaml`).
 
+### Advanced Commands
+- `/calendar`: Open the calendar view.
+- `/YYYY-MM-DD`: Filter tasks by a specific date.
+- `/default`: Reset to the default view.
+
+### Calendar Navigation
+- `t`: Go to today's date.
+- `p`: Previous month.
+- `n`: Next month.
+- `YYYY-MM-DD`: Go to a specific date.
+
 Example:
 ```bash
 python main.py --ascii --demo my-todos.yaml
+python main.py /calendar
+python main.py /2025-06-16
 ```
 
 ## License

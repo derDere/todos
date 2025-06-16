@@ -10,10 +10,11 @@ from todoapp import *
 def cli_help():
     print("Usage: python main.py [options] [filename]")
     print("Options:")
-    print("  -h, --help, /?, ?, -?    Show this help message")
+    print("  -h, --help, ?, -?    Show this help message")
     print("  -a, --ascii              Use ASCII character set for the UI")
     print("  -d, --demo               Add demo tasks to the ToDo list")
     print("  -nc, --no-colors         Disable colored output")
+    print("  /<advcmd>                execute an advanced command (e.g., /calendar)")
     print(f"  filename                 The file to load/save the ToDo list (default: ~/{DEFAULT_FILENAME})")
     print("")
     print("Example:")
@@ -24,6 +25,7 @@ def cli_help():
 def main(args:list[str]) -> int:
     filename = ""
     add_demo_tasks = False
+    start_commands = []
     for arg in args:
         if arg.lower() == "--ascii" or arg.lower() == "-a":
             turn_on_ascii()
@@ -31,9 +33,11 @@ def main(args:list[str]) -> int:
             add_demo_tasks = True
         elif arg.lower() == "--no-colors" or arg.lower() == "-nc":
             turn_off_colors()
-        elif arg.lower() == "--help" or arg.lower() == "-h" or arg.lower() == "/?" or arg.lower() == "?" or arg.lower() == "-?":
+        elif arg.lower() == "--help" or arg.lower() == "-h" or arg.lower() == "?" or arg.lower() == "-?":
             cli_help()
             return 0
+        elif arg.startswith("/"):
+            start_commands.append(arg.strip().lower())
         elif os.path.exists(arg):
             if len(filename) > 0:
                 print("Error: Only one filename can be specified.")
@@ -43,6 +47,7 @@ def main(args:list[str]) -> int:
     if len(filename) <= 0:
         home_dir = os.path.expanduser("~")
         filename = os.path.join(home_dir, DEFAULT_FILENAME)
+    
     app = ToDoApp(filename)
 
     if add_demo_tasks:
@@ -71,10 +76,8 @@ def main(args:list[str]) -> int:
         for n in range(30, 60):
             demotask = ToDo(f"Demo Task {n}", f"This is a demo task description for task {n}.", datetime(2026, 10, 15))
             app.todo_list.add_task(demotask)
-        
-        #app.todo_list.save(filename)
 
-    app.run()
+    app.run(start_commands)
     return 0
 
 
