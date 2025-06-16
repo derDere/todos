@@ -16,7 +16,7 @@ A simple command-line ToDo application to manage your tasks efficiently.
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/derDere/todos.md
+   git clone https://github.com/derDere/todos
    ```
 2. Install dependencies:
    ```bash
