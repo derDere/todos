@@ -52,5 +52,8 @@ if [ -L "$SYMLINK" ]; then
 fi
 sudo ln -s "$INSTALL_DIR/run.sh" "$SYMLINK" || { log_error "Failed to create symlink $SYMLINK"; echo "Error: Could not create symlink."; exit 1; }
 
+# Ensure both run.sh and install.sh scripts are executable
 sudo chmod +x "$INSTALL_DIR/run.sh"
+sudo chmod +x "$INSTALL_DIR/install.sh"
+
 echo "Installation complete. You can now use the 'todos' command."
