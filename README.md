@@ -27,6 +27,16 @@ A simple command-line ToDo application to manage your tasks efficiently.
    python main.py
    ```
 
+## Quick Install
+
+To quickly install the ToDo application, run the following command:
+
+```bash
+curl -s https://raw.githubusercontent.com/derDere/todos/main/install.sh | bash
+```
+
+This will install the application to `/opt/derDere/todos` and create a `todos` command available system-wide.
+
 ## Usage
 Run the application with the following options:
 - `-h, --help`: Show help message.
