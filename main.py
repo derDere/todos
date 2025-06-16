@@ -65,6 +65,14 @@ def main(args:list[str]) -> int:
         app.todo_list.add_task(demotask6)
         app.todo_list.add_task(demotask7)
         app.todo_list.add_task(demotask8)
+
+        for n in range(9, 30):
+            demotask = ToDo(f"Demo Task {n}", f"This is a demo task description for task {n}.", datetime.now())
+            app.todo_list.add_task(demotask)
+
+        for n in range(30, 60):
+            demotask = ToDo(f"Demo Task {n}", f"This is a demo task description for task {n}.", datetime(2026, 10, 15))
+            app.todo_list.add_task(demotask)
         
         #app.todo_list.save(filename)
 

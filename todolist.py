@@ -83,6 +83,9 @@ class ToDoList():
         todays_tasks = self.get_todays_tasks()
         return [task for task in self.tasks if task not in todays_tasks]
     
+    def get_tasks_for_date(self, date: datetime) -> list[ToDo]:
+        return [task for task in self.tasks if task.planned_at and task.planned_at.date() == date.date()]
+    
     def find_task(self, search:str) -> list[ToDo]:
         search = search.lower().strip()
         found_tasks = []

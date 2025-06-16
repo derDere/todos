@@ -51,10 +51,13 @@ class ToDo():
         task.created_at = task_dict["created"]
         return task
 
-    def print_min(self, prefix:str = "", suffix:str = "", padw:int=0, width:int = HL_SIZE, color:str=None):
+    def print_min(self, prefix:str = "", suffix:str = "", padw:int=0, width:int = HL_SIZE, color:str=None, index:int|None = None, max_index:int|None = None):
         check = current_char_set[0]
         state = f"[{check}]" if self.state else "[ ]"
-        line = f"{state} {self.title}"
+        index_str = ""
+        if index is not None and max_index is not None:
+            index_str = f"{index:>{len(str(max_index))}}: "
+        line = f"{index_str}{state} {self.title}"
         if len(line) > width - len(prefix) - len(suffix):
             line = line[:width - len(prefix) - len(suffix) - 3] + "..."
         if len(line) < padw:
