@@ -26,13 +26,11 @@ def main(args:list[str]) -> int:
     add_demo_tasks = False
     for arg in args:
         if arg.lower() == "--ascii" or arg.lower() == "-a":
-            global current_char_set
-            current_char_set = ASCII_CHAR_SET
+            turn_on_ascii()
         elif arg.lower() == "--demo" or arg.lower() == "-d":
             add_demo_tasks = True
         elif arg.lower() == "--no-colors" or arg.lower() == "-nc":
-            global no_colors
-            no_colors = True
+            turn_off_colors()
         elif arg.lower() == "--help" or arg.lower() == "-h" or arg.lower() == "/?" or arg.lower() == "?" or arg.lower() == "-?":
             cli_help()
             return 0

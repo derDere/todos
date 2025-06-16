@@ -1,7 +1,7 @@
 TODO_RE_PATTERN = r"^- \[(X| )\] (.+?)( - Deadline: `(\d{4}-\d{2}-\d{2})`)?( - Created: `(\d{4}-\d{2}-\d{2})`)\\?(?:\n\s*```([\s\S]*?)```)?$"
 HL_SIZE = 80
-CHAR_SET = "✔─▶◀"
-ASCII_CHAR_SET = "X_><"
+CHAR_SET =       "✔─▶◀┌┐└┘├┤┬┴─│┼═"
+ASCII_CHAR_SET =  "X_><++++++++-|+="
 DEFAULT_FILENAME = "todos.yaml"
 ISO_DATE_PATTERN = r"^\d{4}-\d{2}-\d{2}$"
 

@@ -8,6 +8,7 @@ from consts import *
 from tools import *
 from todo import ToDo
 from todolist import ToDoList
+from calendar_view import CalendarView
 
 
 class ToDoApp:
@@ -143,6 +144,9 @@ class ToDoApp:
         print("  /YYYY-MM-DD   Enter an iso-formatted date to filter tasks by date")
         print("")
         print("  /default      Goes back to the default view (no date filter)")
+        print("")
+        print("  /cal")
+        print("  /calendar     Opens the calendar view")
         hl()
         input("Press Enter to return to the main menu...")
     
@@ -241,8 +245,8 @@ class ToDoApp:
             future_tasks = []
         future_len = len(future_tasks)
         all_tasks = [*todays_tasks, *future_tasks]
-        larr = current_char_set[2]
-        rarr = current_char_set[3]
+        larr = style(2)
+        rarr = style(3)
         for task in all_tasks:
             if len(task.title) > max_w:
                 max_w = len(task.title)
@@ -298,7 +302,7 @@ class ToDoApp:
     
     def _print_alert(self, msg: str, max_w: int = HL_SIZE, color: str = COLOR_BRIGHT_RED, delay: float = 0.5):
         hl(max_w)
-        print(f" {color}{msg}{COLOR_RESET}")
+        print(" " + colorize(msg, color))
         time.sleep(delay)
 
     def _main_menu(self) -> bool:
@@ -383,6 +387,10 @@ class ToDoApp:
         if acmd == "default":
             self._selected_date = None
             self._selected_task_index = 0
+        
+        elif acmd == "cal" or acmd == "calendar":
+            cv = CalendarView(self.todo_list, self._selected_date)
+            cv.run()
 
         elif re.match(ISO_DATE_PATTERN, acmd):
             try:

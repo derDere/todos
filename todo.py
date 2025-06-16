@@ -52,7 +52,7 @@ class ToDo():
         return task
 
     def print_min(self, prefix:str = "", suffix:str = "", padw:int=0, width:int = HL_SIZE, color:str=None, index:int|None = None, max_index:int|None = None):
-        check = current_char_set[0]
+        check = style(0)
         state = f"[{check}]" if self.state else "[ ]"
         index_str = ""
         if index is not None and max_index is not None:
@@ -69,12 +69,12 @@ class ToDo():
         return ["title", "planned", "created", "description"]
     
     def print_full(self, selection:str=""):
-        larr = current_char_set[2]
+        larr = style(2)
         larr = larr + larr + larr + " "
-        rarr = current_char_set[3]
+        rarr = style(3)
         rarr = " " + rarr + rarr + rarr
         hl()
-        check = current_char_set[0]
+        check = style(0)
         state = f"[{check}]" if self.state else "[ ]"
         line = f"{state} {self.title}"
         title_color = COLOR_BRIGHT_MAGENTA
@@ -89,11 +89,11 @@ class ToDo():
             else:
                 planned_str = self.planned_at.strftime(" - Deadline: `%Y-%m-%d`")
             if selection == "planned":
-                planned_str = f"{COLOR_BRIGHT_GREEN}{planned_str}{rarr}{COLOR_RESET}"
+                planned_str = colorize(f"{planned_str}{rarr}", COLOR_BRIGHT_GREEN)
             print(planned_str)
         created_str = self.created_at.strftime(" - Created: `%Y-%m-%d`")
         if selection == "created":
-            created_str = f"{COLOR_BRIGHT_GREEN}{created_str}{rarr}{COLOR_RESET}"
+            created_str = colorize(f"{created_str}{rarr}", COLOR_BRIGHT_GREEN)
         print(created_str)
         if self.description or len(selection) > 0:
             hl()
@@ -103,7 +103,7 @@ class ToDo():
             center("Description:", color=description_color)
             lines = self.description.splitlines()
             if len(lines) <= 0 and len(selection) > 0:
-                lines = [f"{COLOR_BRIGHT_BLACK}EMPTY{COLOR_RESET}"]
+                lines = [colorize("EMPTY", COLOR_BRIGHT_BLACK)]
             midIndex = (len(lines) // 2) - 1
             if midIndex < 0:
                 midIndex = 0
@@ -113,7 +113,7 @@ class ToDo():
                         line = f"{larr}{line}"
                     else:
                         line = f"    {line}"
-                    line = f"{COLOR_BRIGHT_GREEN}{line}{COLOR_RESET}"
+                    line = colorize(line, COLOR_BRIGHT_GREEN)
                 else:
                     line = f"    {line}"
                 print(line)

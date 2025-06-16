@@ -6,8 +6,44 @@ import os
 from consts import *
 
 
-current_char_set = CHAR_SET
-no_colors = False
+_current_char_set = CHAR_SET
+_no_colors = False
+
+
+def style(index:int = None) -> str:
+    global _current_char_set
+    if index is None:
+        return _current_char_set
+    return _current_char_set[index]
+
+
+def turn_on_ascii():
+    global _current_char_set
+    _current_char_set = ASCII_CHAR_SET
+
+
+def turn_off_ascii():
+    global _current_char_set
+    _current_char_set = CHAR_SET
+
+
+def colorize(text: str, color: str) -> str:
+    global _no_colors
+    if _no_colors:
+        return text
+    if color is None or color == "":
+        return text
+    return f"{color}{text}{COLOR_RESET}"
+
+
+def turn_on_colors():
+    global _no_colors
+    _no_colors = False
+
+
+def turn_off_colors():
+    global _no_colors
+    _no_colors = True
 
 
 def cls():
@@ -16,17 +52,18 @@ def cls():
 
 
 def hl(length:int = HL_SIZE):
-    line = current_char_set[1]
+    line = style(1)
     print(f"{line * length}")
 
 
 def center(text: str, width: int = HL_SIZE, space:str = " ", color:str=None) -> str:
+    global _no_colors
     h = width // 2
     if len(text) < width:
         h -= len(text) // 2
     else:
         h = 0
-    if color and not no_colors:
+    if color and not _no_colors:
         print(f"{space * h}{color}{text}{COLOR_RESET}")
     else:
         print(f"{space * h}{text}")
@@ -34,11 +71,11 @@ def center(text: str, width: int = HL_SIZE, space:str = " ", color:str=None) -> 
 
 def edit_string(message:str, default:str="") -> str:
     print(message)
-    print(f"  {COLOR_BRIGHT_BLACK}(You may cancel by entering ctrl-x){COLOR_RESET}")
-    print(f"  Current: {COLOR_BRIGHT_GREEN}\"{default}\"{COLOR_RESET}")
+    print("  " + colorize("(You may cancel by entering ctrl-x)", COLOR_BRIGHT_BLACK))
+    print("  Current: " + colorize(f"\"{default}\"", COLOR_BRIGHT_GREEN))
     i = input("  New: ")
     if i == CTRL_X_INPUT:
-        print(f"{COLOR_BRIGHT_YELLOW}Edit Canceled.{COLOR_RESET}")
+        print(colorize("Edit Canceled.", COLOR_BRIGHT_YELLOW))
         time.sleep(0.5)
         return default
     return i
@@ -49,18 +86,18 @@ def edit_date(message:str, default:datetime=None, allow_empty:bool=False) -> dat
     defaults = default.strftime("%Y-%m-%d") if default else "None"
 
     print(message)
-    print(f"  {COLOR_BRIGHT_CYAN}(Options: ? YYYY-MM-DD d+<DAYS> d-<DAYS> t{non_opt}){COLOR_RESET}")
-    print(f"  {COLOR_BRIGHT_BLACK}(You may cancel by entering ctrl-x){COLOR_RESET}")
+    print(f"  {colorize('(Options: ? YYYY-MM-DD d+<DAYS> d-<DAYS> t' + non_opt + ')}', COLOR_BRIGHT_CYAN)}")
+    print(f"  {colorize('(You may cancel by entering ctrl-x)', COLOR_BRIGHT_BLACK)}")
     while True:
-        print(f"  Current: {COLOR_BRIGHT_GREEN}{defaults}{COLOR_RESET}")
+        print(f"  Current: {colorize(defaults, COLOR_BRIGHT_GREEN)}")
         i = input("  New: ")
         if i == CTRL_X_INPUT:
-            print(f"{COLOR_BRIGHT_YELLOW}Edit Canceled.{COLOR_RESET}")
+            print(colorize("Edit Canceled.", COLOR_BRIGHT_YELLOW))
             time.sleep(0.5)
             return default
         elif i.lower() == "?":
             print("")
-            print(f"{COLOR_BRIGHT_CYAN}Options:{COLOR_RESET}")
+            print(colorize("Options:", COLOR_BRIGHT_CYAN))
             print(f"  YYYY-MM-DD: Set a specific date.")
             print(f"  d+<DAYS>: Set a date in the future, e.g., d+7 for 7 days from now.")
             print(f"  d-<DAYS>: Set a date in the past, e.g., d-7 for 7 days ago.")
@@ -81,19 +118,19 @@ def edit_date(message:str, default:datetime=None, allow_empty:bool=False) -> dat
                 new_date = datetime.now() + timedelta(days=days)
                 return new_date
             else:
-                print(f"{COLOR_RED}Invalid format. Use d+<DAYS> or d-<DAYS> where <DAYS> is a number.{COLOR_RESET}")
+                print(colorize("Invalid format. Use d+<DAYS> or d-<DAYS> where <DAYS> is a number.", COLOR_RED))
         else:
             try:
                 new_date = datetime.strptime(i, "%Y-%m-%d")
                 return new_date
             except ValueError:
-                print(f"{COLOR_RED}Invalid date format. Please use YYYY-MM-DD.{COLOR_RESET}")
+                print(colorize("Invalid date format. Please use YYYY-MM-DD.", COLOR_RED))
 
 
 def edit_multiline(message:str, default:str="") -> str:
     lines = default.splitlines() if default else []
     current_line = len(lines)
-    larr = current_char_set[2] # left arrow character
+    larr = style(2) # left arrow character
     
     while True:
         cls()
@@ -106,15 +143,15 @@ def edit_multiline(message:str, default:str="") -> str:
             ln = f"{i + 1:>{num_len}} "
             lend = "\n" if i < len(lines) - 1 else ""
             if i == current_line:
-                print(f"{ln}{COLOR_BRIGHT_GREEN}{larr} {line}{COLOR_RESET}", end=lend)
+                print(f"{ln}{colorize(larr, COLOR_BRIGHT_GREEN)} {line}", end=lend)
             else:
                 print(f"{ln}  {line}", end=lend)
         if current_line >= len(lines):
-            print(f"{COLOR_BRIGHT_GREEN} {larr}{COLOR_RESET}")
+            print(f"{colorize(larr, COLOR_BRIGHT_GREEN)}")
         else:
             print("")
         hl()
-        print(f"{COLOR_BRIGHT_CYAN} Options: // /del /done /<LIN> /? /edit <NEW_LINE>{COLOR_RESET}")
+        print(f"{colorize('Options: // /del /done /<LIN> /? /edit <NEW_LINE>', COLOR_BRIGHT_CYAN)}")
         hl()
         cmd = input(": ").strip()
         if cmd == "/done":
@@ -123,7 +160,7 @@ def edit_multiline(message:str, default:str="") -> str:
         elif cmd == "/?":
             cls()
             hl()
-            print(f"{COLOR_BRIGHT_CYAN}Options:{COLOR_RESET}")
+            print(f"{colorize('Options:', COLOR_BRIGHT_CYAN)}")
             hl()
             print(f"  //          move to the end of the text.")
             print(f"  /del        delete the current line.")
@@ -155,10 +192,10 @@ def edit_multiline(message:str, default:str="") -> str:
                 if 0 <= line_num <= len(lines):
                     current_line = line_num
                 else:
-                    print(f"{COLOR_RED}Line number out of range.{COLOR_RESET}")
+                    print(colorize("Line number out of range.", COLOR_RED))
             else:
-                print(f"{COLOR_RED}Invalid command.{COLOR_RESET}")
-        
+                print(colorize("Invalid command.", COLOR_RED))
+
         else:
             new_line = cmd
             if current_line < len(lines):
