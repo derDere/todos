@@ -8,4 +8,4 @@ GIT_PULL_ERR="/var/log/todos_git_pull_error.log"
 git -C "$INSTALL_DIR" pull --quiet 1>>"$GIT_PULL_LOG" 2>>"$GIT_PULL_ERR"
 
 # Run the application without changing directories
-python3 "$INSTALL_DIR/main.py" "$@"
+python3 "$INSTALL_DIR/main.py" $@
