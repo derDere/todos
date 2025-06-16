@@ -37,6 +37,10 @@ else
     sudo git clone "$REPO_URL" "$INSTALL_DIR" --quiet || { log_error "Failed to clone repository to $INSTALL_DIR"; echo "Error: Could not clone repository."; exit 1; }
 fi
 
+# Ensure the log file is writable by all users
+sudo touch /var/log/todos_git_pull_error.log
+sudo chmod 666 /var/log/todos_git_pull_error.log
+
 # Adjust permissions to allow non-root users to perform git pull
 sudo chown -R root:users "$INSTALL_DIR/.git"
 sudo chmod -R g+rwX "$INSTALL_DIR/.git"
