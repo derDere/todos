@@ -17,11 +17,11 @@ if ($args[0] -eq "--uninstall") {
     }
 }
 
-# Run git pull silently and overwrite local changes
-Write-Host "Checking for updates..."
+# Suppress git reset output and make 'Checking for updates...' gray
+Write-Host "`e[90mChecking for updates...`e[0m"
 try {
     git -C $ScriptPath fetch --quiet
-    git -C $ScriptPath reset --hard origin/main
+    git -C $ScriptPath reset --hard origin/main > $null 2>&1
 } catch {
     Write-Host "Error: Could not update repository."
 }
