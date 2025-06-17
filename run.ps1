@@ -18,7 +18,7 @@ if ($args[0] -eq "--uninstall") {
 }
 
 # Use -ForegroundColor to make 'Checking for updates...' gray
-Write-Host "Checking for updates..." -ForegroundColor Gray
+Write-Host "Checking for updates..." -ForegroundColor DarkGray
 try {
     git -C $ScriptPath fetch --quiet
     git -C $ScriptPath reset --hard origin/main > $null 2>&1
