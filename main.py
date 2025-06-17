@@ -25,6 +25,8 @@ def cli_help():
 
 
 def main(args:list[str]) -> int:
+    print(args)
+    input("...")
     filename = ""
     add_demo_tasks = False
     start_commands = []
