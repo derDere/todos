@@ -27,6 +27,7 @@ def cli_help():
 def main(args:list[str]) -> int:
     print(args)
     input("...")
+
     filename = ""
     add_demo_tasks = False
     start_commands = []
@@ -48,6 +49,9 @@ def main(args:list[str]) -> int:
                 return 1
             else:
                 filename = arg
+    
+    input(f"Using filename: {filename}")
+    
     if len(filename) <= 0:
         home_dir = os.path.expanduser("~")
         filename = os.path.join(home_dir, DEFAULT_FILENAME)
