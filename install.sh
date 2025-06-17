@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALL_DIR="$HOME/.opt/derDere/todos"
-SYMLINK="$HOME/bin/todos"
+SYMLINK="$HOME/.bin/todos"
 REPO_URL="https://github.com/derDere/todos"
 
 # Function to log errors locally
@@ -40,8 +40,8 @@ else
 fi
 
 # Create symlink
-if [ ! -d "$HOME/bin" ]; then
-    mkdir -p "$HOME/bin" || { log_error "Failed to create $HOME/bin directory"; echo "Error: Could not create $HOME/bin directory"; exit 1; }
+if [ ! -d "$HOME/.bin" ]; then
+    mkdir -p "$HOME/.bin" || { log_error "Failed to create $HOME/.bin directory"; echo "Error: Could not create $HOME/.bin directory"; exit 1; }
 fi
 if [ -L "$SYMLINK" ]; then
     rm "$SYMLINK" || { log_error "Failed to remove existing symlink $SYMLINK"; echo "Error: Could not update symlink."; exit 1; }
@@ -51,7 +51,7 @@ ln -s "$INSTALL_DIR/run.sh" "$SYMLINK" || { log_error "Failed to create symlink 
 chmod +x "$INSTALL_DIR/run.sh"
 chmod +x "$INSTALL_DIR/install.sh"
 
-# Detect the user's shell and add $HOME/bin to the appropriate configuration file
+# Detect the user's shell and add $HOME/.bin to the appropriate configuration file
 SHELL_NAME=$(basename "$SHELL")
 CONFIG_FILE=""
 case "$SHELL_NAME" in
@@ -65,13 +65,13 @@ case "$SHELL_NAME" in
         CONFIG_FILE="$HOME/.config/fish/config.fish"
         ;;
     *)
-        echo "Unsupported shell: $SHELL_NAME. Please add $HOME/bin to your PATH manually."
+        echo "Unsupported shell: $SHELL_NAME. Please add $HOME/.bin to your PATH manually."
         exit 1
         ;;
 esac
 
-if [[ -n "$CONFIG_FILE" && ":$PATH:" != *":$HOME/bin:"* ]]; then
-    echo "export PATH=\"$HOME/bin:\$PATH\"" >> "$CONFIG_FILE"
+if [[ -n "$CONFIG_FILE" && ":$PATH:" != *":$HOME/.bin:"* ]]; then
+    echo "export PATH=\"$HOME/.bin:\$PATH\"" >> "$CONFIG_FILE"
 fi
 
 echo "Installation complete. You can now use the 'todos' command after restarting your terminal session."
