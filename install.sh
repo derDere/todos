@@ -72,6 +72,7 @@ esac
 
 if [[ -n "$CONFIG_FILE" && ":$PATH:" != *":$HOME/.bin:"* ]]; then
     echo "export PATH=\"\$HOME/.bin:\$PATH\"" >> "$CONFIG_FILE"
+    echo "Added \"\$HOME/.bin\" to \"$CONFIG_FILE\". Please restart your terminal session or run 'source $CONFIG_FILE' to apply changes."
 fi
 
 echo "Installation complete. You can now use the 'todos' command after restarting your terminal session."
