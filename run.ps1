@@ -17,8 +17,8 @@ if ($args[0] -eq "--uninstall") {
     }
 }
 
-# Suppress git reset output and make 'Checking for updates...' gray
-Write-Host "`e[90mChecking for updates...`e[0m"
+# Use -ForegroundColor to make 'Checking for updates...' gray
+Write-Host "Checking for updates..." -ForegroundColor Gray
 try {
     git -C $ScriptPath fetch --quiet
     git -C $ScriptPath reset --hard origin/main > $null 2>&1
