@@ -82,5 +82,7 @@ def main(args:list[str]) -> int:
 
 
 if __name__ == "__main__":
+    print("TEST")
+    input("Press Enter to continue...")
     import sys
     sys.exit(main(sys.argv[1:]))
