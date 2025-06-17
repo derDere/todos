@@ -3,11 +3,12 @@
 # Determine the installation directory based on the script's location
 INSTALL_DIR="$(dirname "$(realpath "$0")")"
 
-# Run git pull silently
+# Run git pull silently and overwrite local changes
 echo -e "\e[90mChecking for updates...\e[0m"
 GIT_PULL_LOG="/dev/null"
 GIT_PULL_ERR="$HOME/.todos_git_pull_error.log"
-git -C "$INSTALL_DIR" pull --quiet 1>>"$GIT_PULL_LOG" 2>>"$GIT_PULL_ERR"
+git -C "$INSTALL_DIR" fetch --quiet 1>>"$GIT_PULL_LOG" 2>>"$GIT_PULL_ERR"
+git -C "$INSTALL_DIR" reset --hard origin/main 1>>"$GIT_PULL_LOG" 2>>"$GIT_PULL_ERR"
 
 # Check for --uninstall option
 if [[ "$1" == "--uninstall" ]]; then
