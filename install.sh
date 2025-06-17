@@ -27,6 +27,19 @@ fi
 
 # Installation logic
 echo "Installing ToDo application..."
+
+# Check if Python3 and Git are installed
+if ! command -v python3 &> /dev/null
+then
+    echo "Error: Python3 is not installed. Please install Python3 and try again." >&2
+    exit 1
+fi
+if ! command -v git &> /dev/null
+then
+    echo "Error: Git is not installed. Please install Git and try again." >&2
+    exit 1
+fi
+
 if [ ! -d "$INSTALL_DIR" ]; then
     mkdir -p "$INSTALL_DIR" || { log_error "Failed to create directory $INSTALL_DIR"; echo "Error: Could not create $INSTALL_DIR"; exit 1; }
 fi

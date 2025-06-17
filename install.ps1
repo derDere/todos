@@ -28,6 +28,16 @@ if ($args[0] -eq "uninstall") {
 }
 
 # Installation logic
+# Check if Python and Git are installed
+if (-Not (Get-Command python -ErrorAction SilentlyContinue)) {
+    Write-Host "Error: Python is not installed. Please install Python and try again." -ForegroundColor Red
+    exit 1
+}
+if (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
+    Write-Host "Error: Git is not installed. Please install Git and try again." -ForegroundColor Red
+    exit 1
+}
+
 Write-Host "Installing ToDo application..."
 if (-Not (Test-Path $InstallDir)) {
     New-Item -ItemType Directory -Path $InstallDir -ErrorAction Stop
