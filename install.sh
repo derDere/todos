@@ -18,6 +18,9 @@ if [ "$1" == "uninstall" ]; then
     if [ -L "$SYMLINK" ]; then
         rm "$SYMLINK" || { log_error "Failed to remove symlink $SYMLINK"; echo "Error: Could not remove symlink $SYMLINK"; exit 1; }
     fi
+    if [ -f "$HOME/.todos_install_error.log" ]; then
+        rm "$HOME/.todos_install_error.log"
+    fi
     echo "Uninstallation complete."
     exit 0
 fi
@@ -36,10 +39,6 @@ else
     git clone "$REPO_URL" "$INSTALL_DIR" --quiet || { log_error "Failed to clone repository to $INSTALL_DIR"; echo "Error: Could not clone repository."; exit 1; }
 fi
 
-# Ensure the log file is writable
-touch "$HOME/.todos_install_error.log"
-chmod 600 "$HOME/.todos_install_error.log"
-
 # Create symlink
 if [ ! -d "$HOME/bin" ]; then
     mkdir -p "$HOME/bin" || { log_error "Failed to create $HOME/bin directory"; echo "Error: Could not create $HOME/bin directory"; exit 1; }
@@ -51,5 +50,11 @@ ln -s "$INSTALL_DIR/run.sh" "$SYMLINK" || { log_error "Failed to create symlink 
 
 chmod +x "$INSTALL_DIR/run.sh"
 chmod +x "$INSTALL_DIR/install.sh"
+
+# Ensure $HOME/bin is in the user's PATH
+if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
+    echo "export PATH=\"$HOME/bin:\$PATH\"" >> "$HOME/.bashrc"
+    source "$HOME/.bashrc"
+fi
 
 echo "Installation complete. You can now use the 'todos' command."
