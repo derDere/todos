@@ -10,6 +10,10 @@ GIT_PULL_ERR="$HOME/.todos_git_pull_error.log"
 git -C "$INSTALL_DIR" fetch --quiet 1>>"$GIT_PULL_LOG" 2>>"$GIT_PULL_ERR"
 git -C "$INSTALL_DIR" reset --hard origin/main 1>>"$GIT_PULL_LOG" 2>>"$GIT_PULL_ERR"
 
+# Reset executable permissions for run.sh and install.sh
+chmod +x "$INSTALL_DIR/run.sh"
+chmod +x "$INSTALL_DIR/install.sh"
+
 # Check for --uninstall option
 if [[ "$1" == "--uninstall" ]]; then
     echo "Are you sure you want to uninstall the ToDo application? (y/n)"
