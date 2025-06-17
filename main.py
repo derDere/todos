@@ -41,9 +41,9 @@ def main(args:list[str]) -> int:
         elif arg.lower() == "--help" or arg.lower() == "-h" or arg.lower() == "?" or arg.lower() == "-?":
             cli_help()
             return 0
-        elif arg.startswith("/"):
+        elif arg.startswith("/") and arg[1:].count("/") == 0:
             start_commands.append(arg.strip().lower())
-        elif os.path.exists(arg):
+        elif os.path.isabs(arg) or os.path.dirname(arg):  # Check if it's a valid file path
             if len(filename) > 0:
                 print("Error: Only one filename can be specified.")
                 return 1
