@@ -41,13 +41,13 @@ fi
 sudo touch /var/log/todos_git_pull_error.log
 sudo chmod 666 /var/log/todos_git_pull_error.log
 
-# Adjust permissions to allow non-root users to perform git pull
+# Adjust permissions to allow all users to perform Git operations
 sudo chown -R root:users "$INSTALL_DIR/.git"
 sudo chmod -R g+rwX "$INSTALL_DIR/.git"
 sudo find "$INSTALL_DIR/.git" -type d -exec chmod g+s {} \;
 
-# Mark the installation directory as safe for Git
-sudo -u "$SUDO_USER" git config --global --add safe.directory "$INSTALL_DIR"
+# Mark the installation directory as safe for Git system-wide
+sudo git config --system --add safe.directory "$INSTALL_DIR"
 
 # Install Python dependencies
 sudo python3 -m pip install -r "$INSTALL_DIR/requirements.txt"
