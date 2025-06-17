@@ -38,7 +38,7 @@ curl -s https://raw.githubusercontent.com/derDere/todos/main/install.sh | bash
 
 ### Windows
 ```powershell
-powershell -Command "& {Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/derDere/todos/main/install.ps1' -OutFile 'install.ps1'; & 'C:\\Program Files\\Git\\bin\\bash.exe' install.ps1}" 
+powershell -Command "& {Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/derDere/todos/main/install.ps1' -OutFile 'install.ps1'; & .\install.ps1}" 
 ```
 
 This will install the application to `AppData\Local\derDere\todos` and create a `todos` command available system-wide.
