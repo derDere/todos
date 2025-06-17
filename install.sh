@@ -64,6 +64,12 @@ case "$SHELL_NAME" in
     fish)
         CONFIG_FILE="$HOME/.config/fish/config.fish"
         ;;
+    sh)
+        CONFIG_FILE="$HOME/.profile"
+        ;;
+    nu)
+        CONFIG_FILE="$HOME/.config/nushell/config.nu"
+        ;;
     *)
         echo "Unsupported shell: $SHELL_NAME. Please add $HOME/.bin to your PATH manually."
         exit 1
