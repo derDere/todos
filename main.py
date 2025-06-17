@@ -84,6 +84,5 @@ def main(args:list[str]) -> int:
 
 
 if __name__ == "__main__":
-    input("POOP: ")
     import sys
     sys.exit(main(sys.argv[1:]))
