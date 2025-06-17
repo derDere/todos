@@ -36,7 +36,12 @@ To quickly install the ToDo application, run the following command:
 curl -s https://raw.githubusercontent.com/derDere/todos/main/install.sh | bash
 ```
 
-This will install the application to `/opt/derDere/todos` and create a `todos` command available system-wide.
+### Windows
+```powershell
+powershell -Command "& {Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/derDere/todos/main/install.ps1' -OutFile 'install.ps1'; & 'C:\\Program Files\\Git\\bin\\bash.exe' install.ps1}" 
+```
+
+This will install the application to `AppData\Local\derDere\todos` and create a `todos` command available system-wide.
 
 ## Usage
 Run the application with the following options:
