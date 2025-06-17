@@ -71,7 +71,7 @@ case "$SHELL_NAME" in
 esac
 
 if [[ -n "$CONFIG_FILE" && ":$PATH:" != *":$HOME/.bin:"* ]]; then
-    echo "export PATH=\"$HOME/.bin:\$PATH\"" >> "$CONFIG_FILE"
+    echo "export PATH=\"\$HOME/.bin:\$PATH\"" >> "$CONFIG_FILE"
 fi
 
 echo "Installation complete. You can now use the 'todos' command after restarting your terminal session."
