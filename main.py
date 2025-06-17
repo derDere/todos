@@ -17,6 +17,8 @@ def cli_help():
     print("  /<advcmd>                execute an advanced command (e.g., /calendar)")
     print(f"  filename                 The file to load/save the ToDo list (default: ~/{DEFAULT_FILENAME})")
     print("")
+    print("  --uninstall              Uninstall the ToDo app")
+    print("")
     print("Example:")
     print("  python main.py --ascii --demo my-todos.md")
     print("")
