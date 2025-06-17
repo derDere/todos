@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INSTALL_DIR="$HOME/.todos"
+INSTALL_DIR="$HOME/.opt/derDere/todos"
 SYMLINK="$HOME/bin/todos"
 REPO_URL="https://github.com/derDere/todos"
 
@@ -51,10 +51,28 @@ ln -s "$INSTALL_DIR/run.sh" "$SYMLINK" || { log_error "Failed to create symlink 
 chmod +x "$INSTALL_DIR/run.sh"
 chmod +x "$INSTALL_DIR/install.sh"
 
-# Ensure $HOME/bin is in the user's PATH
-if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
-    echo "export PATH=\"$HOME/bin:\$PATH\"" >> "$HOME/.bashrc"
-    source "$HOME/.bashrc"
+# Detect the user's shell and add $HOME/bin to the appropriate configuration file
+SHELL_NAME=$(basename "$SHELL")
+CONFIG_FILE=""
+case "$SHELL_NAME" in
+    bash)
+        CONFIG_FILE="$HOME/.bashrc"
+        ;;
+    zsh)
+        CONFIG_FILE="$HOME/.zshrc"
+        ;;
+    fish)
+        CONFIG_FILE="$HOME/.config/fish/config.fish"
+        ;;
+    *)
+        echo "Unsupported shell: $SHELL_NAME. Please add $HOME/bin to your PATH manually."
+        exit 1
+        ;;
+esac
+
+if [[ -n "$CONFIG_FILE" && ":$PATH:" != *":$HOME/bin:"* ]]; then
+    echo "export PATH=\"$HOME/bin:\$PATH\"" >> "$CONFIG_FILE"
+    source "$CONFIG_FILE"
 fi
 
 echo "Installation complete. You can now use the 'todos' command."

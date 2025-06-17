@@ -31,6 +31,7 @@ A simple command-line ToDo application to manage your tasks efficiently.
 
 To quickly install the ToDo application, run the following command:
 
+### Ubuntu
 ```bash
 curl -s https://raw.githubusercontent.com/derDere/todos/main/install.sh | bash
 ```
