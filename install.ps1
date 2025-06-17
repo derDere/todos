@@ -45,9 +45,6 @@ if (Test-Path "$InstallDir\.git") {
 if (-Not (Test-Path "$HOME\AppData\Local\Microsoft\WindowsApps")) {
     New-Item -ItemType Directory -Path "$HOME\AppData\Local\Microsoft\WindowsApps" -ErrorAction Stop
 }
-if (Test-Path $Symlink) {
-    Remove-Item -Force $Symlink -ErrorAction Stop
-}
-New-Item -ItemType SymbolicLink -Path $Symlink -Target "$InstallDir\run.ps1" -ErrorAction Stop
+Copy-Item -Path "$InstallDir\run.ps1" -Destination "$Symlink" -Force -ErrorAction Stop
 
 Write-Host "Installation complete. You can now use the 'todos' command after restarting your terminal session."
